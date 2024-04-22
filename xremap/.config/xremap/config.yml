@@ -1,0 +1,22 @@
+modmap:
+  - name: Global
+    remap:
+      CapsLock: Ctrl_L
+  - name: macOS
+    remap:
+      KEY_LEFTMETA: KEY_LEFTALT
+      KEY_LEFTALT: KEY_LEFTMETA
+    device:
+        only: ["Apple MTP keyboard"]
+
+keymap:
+  - name: Firefox Emacs Binding
+    application:
+      only: [firefox, Google-chrome]
+    remap:
+      C-Shift-p: C-Shift-p
+      C-M-p: C-p
+      C-p: up
+      C-n: down
+      C-s: C-f
+      C-M-S: C-s

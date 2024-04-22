@@ -1,0 +1,5 @@
+#!/bin/bash
+
+status=$(amixer sget Master | tail -n1 | sed -r "s/.*\[(.*)\]/\1/")
+vol=$(amixer get Master | tail -n1 | sed -r "s/.*\[(.*)%\].*/\1/")
+echo "  ${vol}%"

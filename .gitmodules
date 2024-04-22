@@ -1,0 +1,3 @@
+[submodule "rime-ice"]
+	path = rime-ice/.config/ibus/rime
+	url = git@github.com:ST-Saint/rime-ice.git

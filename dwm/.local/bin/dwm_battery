@@ -1,0 +1,30 @@
+#!/bin/bash
+BATTERY_NAME=macsmc-battery
+cap="$(cat /sys/class/power_supply/${BATTERY_NAME}/capacity)"
+status="$(cat /sys/class/power_supply/${BATTERY_NAME}/status)"
+estimated="$(acpi -b | grep -E 'remaining|until' | awk '{print $5}')"
+icon=""
+time=""
+HH="$(echo $estimated | awk -F: '{print $1}')"
+MM="$(echo $estimated | awk -F: '{print $2}')"
+SS="$(echo $estimated | awk -F: '{print $3}')"
+
+if [[ $cap < 20 ]] ; then
+    icon=" "
+elif [[ $cap < 40 ]] ; then
+    icon=" "
+elif [[ $cap < 60 ]] ; then
+    icon=" "
+elif [[ $cap < 80 ]] ; then
+    icon=" "
+else
+    icon=" "
+fi
+
+time=$HH":"$MM
+
+if [ "$time" == "" ]; then
+  echo "$icon $cap%"
+else
+  echo "$icon $cap% $time"
+fi

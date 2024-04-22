@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# get all the infos first to avoid high resources usage
+free_output=$(free -m | grep Mem)
+df_output=$(df -h $HOME | tail -n 1)
+# Used and total memory
+MEMUSED=$(echo $free_output | awk '{print $3}' | sed -E 's/$/\/1024/' | bc -l | xargs printf "%.1f")
+MEMTOT=$(echo $free_output | awk '{print $2}' | sed -E 's/$/\/1024/' | bc -l | xargs printf "%.1f")
+
+# CPU temperature
+CPU=$(top -bn1 | grep Cpu | awk '{print $2}')%
+#CPU=$(sysctl -n hw.sensors.cpu0.temp0 | cut -d. -f1)
+# Used and total storage in /home (rounded to 1024B)
+STOUSED=$(echo $df_output | awk '{print $3}')
+STOTOT=$(echo $df_output | awk '{print $2}')
+STOAVL=$(echo $df_output | awk '{print $4}')
+
+echo "  ${CPU}  ${MEMUSED}/${MEMTOT}G   ${STOAVL}"

@@ -1,0 +1,2 @@
+export DEEPIN_WINE_SCALE=2.00
+exec /opt/apps/com.qq.weixin.deepin/files/run.sh
