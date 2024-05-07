@@ -10,6 +10,9 @@ modmap:
         only: ["Apple MTP keyboard"]
 
 keymap:
+  - name: Global
+    remap:
+      Shift-Esc: Shift-KEY_GRAVE
   - name: Firefox Emacs Binding
     application:
       only: [firefox, Google-chrome]
