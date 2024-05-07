@@ -50,3 +50,6 @@ style_root = "red bold italic"
 format = "[$user]($style) "
 disabled = false
 show_always = true
+
+[hostname]
+ssh_only = false
