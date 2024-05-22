@@ -161,11 +161,12 @@ zstyle ':completion:*:descriptions' format '[%d]'
 # set list-colors to enable filename colorizing
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # preview directory's content with exa when completing cd
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -T -L 2 --color=always $realpath'
-zstyle ':fzf-tab:complete:ls:*' fzf-preview 'exa -T -L 2 --color=always $realpath'
-zstyle ':fzf-tab:complete:exa:*' fzf-preview 'exa -T -L 2 --color=always $realpath'
-zstyle ':fzf-tab:complete:cat:*' fzf-preview 'bat --color=always --style=numbers --line-range=:100 $realpath'
-zstyle ':fzf-tab:complete:bat:*' fzf-preview 'bat --color=always --style=numbers --line-range=:100 $realpath'
+FZF_PREVIEW_CMD='if [ -f $realpath ]; then bat --color=always --style=numbers --line-range=:100 $realpath; else exa -T -L 2 --color=always $realpath; fi'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview ${FZF_PREVIEW_CMD}
+zstyle ':fzf-tab:complete:ls:*' fzf-preview ${FZF_PREVIEW_CMD}
+zstyle ':fzf-tab:complete:exa:*' fzf-preview ${FZF_PREVIEW_CMD}
+zstyle ':fzf-tab:complete:cat:*' fzf-preview ${FZF_PREVIEW_CMD}
+zstyle ':fzf-tab:complete:bat:*' fzf-preview ${FZF_PREVIEW_CMD}
 zstyle ':fzf-tab:*' fzf-pad 10
 zstyle ':fzf-tab:*' fzf-bindings 'ctrl-a:toggle-all'
 zstyle ':fzf-tab:*' continuous-trigger 'tab'
