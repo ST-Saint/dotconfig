@@ -18,6 +18,7 @@ keymap:
       only: [firefox, Google-chrome]
     remap:
       C-Shift-p: C-Shift-p
+      C-Shift-n: C-Shift-n
       C-M-p: C-p
       C-p: up
       C-n: down

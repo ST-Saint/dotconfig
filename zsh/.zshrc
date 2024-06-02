@@ -76,7 +76,6 @@ plugins=(git
          ripgrep
          zsh-syntax-highlighting
          zsh-autosuggestions
-         autojump
          fzf-tab)
 
 
@@ -206,4 +205,5 @@ export PATH=$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH
 
 export PATH=$HOME/.cargo/bin:$PATH
 
+eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
