@@ -73,7 +73,6 @@ CASE_SENSITIVE="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git
          cp
-         ripgrep
          zsh-syntax-highlighting
          zsh-autosuggestions
          fzf-tab)
