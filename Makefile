@@ -43,6 +43,9 @@ gdb:
 xremap:
 	stow -t ${HOME} -R xremap
 
-install: dwm formatter picom rofi Xorg rime-ice starship wechat dunst kitty gdb git zsh xremap
+tmux:
+	stow -t ${HOME} -R tmux
 
-.PHONY: all install dwm formatter picom rofi Xorg rime-ice starship wechat dunst kitty gdb git zsh xremap
+install: dwm formatter picom rofi Xorg rime-ice starship wechat dunst kitty gdb git zsh xremap tmux
+
+.PHONY: all install dwm formatter picom rofi Xorg rime-ice starship wechat dunst kitty gdb git zsh xremap tmux
