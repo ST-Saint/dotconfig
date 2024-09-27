@@ -72,6 +72,7 @@ CASE_SENSITIVE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git
+         zsh-z
          cp
          zsh-syntax-highlighting
          zsh-autosuggestions
