@@ -8,11 +8,18 @@ modmap:
       KEY_LEFTALT: KEY_LEFTMETA
     device:
         only: ["Apple MTP keyboard"]
+  - name: REALFORCE
+    remap:
+      KEY_GRAVE: KEY_ESC
+    device:
+        only: ["Topre REALFORCE 87 US"]
+
 
 keymap:
   - name: Global
     remap:
       Shift-Esc: Shift-KEY_GRAVE
+      Shift_R-backspace: KEY_DELETE
   - name: Firefox Emacs Binding
     application:
       only: [firefox, Google-chrome]
