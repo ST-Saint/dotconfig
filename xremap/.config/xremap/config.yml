@@ -22,7 +22,7 @@ keymap:
       Shift_R-backspace: KEY_DELETE
   - name: Firefox Emacs Binding
     application:
-      only: [firefox, Google-chrome]
+      only: [firefox, zen, Google-chrome]
     remap:
       C-Shift-p: C-Shift-p
       C-Shift-n: C-Shift-n

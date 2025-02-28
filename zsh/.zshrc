@@ -170,6 +170,20 @@ zstyle ':fzf-tab:*' fzf-pad 10
 zstyle ':fzf-tab:*' fzf-bindings 'ctrl-a:toggle-all'
 zstyle ':fzf-tab:*' continuous-trigger 'tab'
 
+
+##################################################
+# yazi
+##################################################
+
+function y() {
+        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+        yazi "$@" --cwd-file="$tmp"
+        if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+                builtin cd -- "$cwd"
+        fi
+        rm -f -- "$tmp"
+}
+
 # Auto-completion
 # ---------------
 [[ $- == *i* ]] && source "/usr/share/fzf/completion.zsh" 2> /dev/null

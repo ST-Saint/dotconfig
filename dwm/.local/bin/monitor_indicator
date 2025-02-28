@@ -20,7 +20,7 @@ while True:
             if event in message:
                 subprocess.run(
                     [
-                        "notify-send",
+                        "/usr/bin/notify-send",
                         "--icon=/home/yayu/.config/dunst/monitor.png",
                         "Monitor", "-u",
                         "low",
