@@ -1,3 +1,3 @@
 [submodule "rime-ice"]
 	path = rime-ice/.config/ibus/rime
-	url = https://github.com/ST-Saint/dotconfig.git
+	url = https://github.com/ST-Saint/rime-ice.git
