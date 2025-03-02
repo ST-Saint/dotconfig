@@ -2,15 +2,19 @@ run_once () {
     if ! pgrep -f ${1} > /dev/null
     then
         shift
-        $@ &
+        if command -v ${1} > /dev/null 2>&1 ; then
+            $@ > ${1}.log &
+        fi
     fi
 }
 
 focus_primary_monitor () {
     let x=3840/2+2160
     let y=2160/2
-    xdotool mousemove $x $y
-    xdotool click 1
+    if command -v xdotool > /dev/null 2>&1 ; then
+        xdotool mousemove $x $y
+        xdotool click 1
+    fi
 }
 
 if [ `xrandr | grep "*" | awk '{print $1}' | grep 3840x2160 | head -n 1` = '3840x2160' ];
@@ -42,5 +46,7 @@ run_once monitor_indicator monitor_indicator
 
 focus_primary_monitor
 
-xsetwacom set 'Wacom One by Wacom S Pen stylus' Rotate half
-xsetwacom set 'Wacom One by Wacom S Pen stylus' MapToOutput HEAD-0
+if command -v xsetwacom > /dev/null 2>&1 ; then
+    xsetwacom set 'Wacom One by Wacom S Pen stylus' Rotate half
+    xsetwacom set 'Wacom One by Wacom S Pen stylus' MapToOutput HEAD-0
+fi
