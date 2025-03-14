@@ -31,7 +31,7 @@ autorandr -c --force
 focus_primary_monitor
 
 run_once emacs emacs
-run_once firefox firefox
+run_once zen-browser zen-browser
 run_once volnoti volnoti
 run_once dunst dunst
 run_once pasystray pasystray -S
