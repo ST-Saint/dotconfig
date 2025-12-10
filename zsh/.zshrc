@@ -92,6 +92,8 @@ plugins=(git
 #   export EDITOR='mvim'
 # fi
 
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
