@@ -96,32 +96,52 @@ alias kssh="kitten ssh"
 ##################################################
 # SSH Agent
 ##################################################
-
 ssh_agent_setup() {
-  # 1. SSH_AUTH_SOCK socket
+  emulate -L zsh
+
+  # 1. A reachable agent is already in the environment (forwarded via -A /
+  #    ForwardAgent, or inherited). Reuse it and never spawn a local one.
+  #    ssh-add exit 2 == cannot reach an agent; 0/1 == reachable.
   if [[ -S "$SSH_AUTH_SOCK" ]]; then
-    return
+    ssh-add -l &>/dev/null
+    (( $? != 2 )) && return
   fi
 
-  # 2. systemd socket
+  # 2. systemd user ssh-agent.socket
   if [[ -S "$XDG_RUNTIME_DIR/ssh-agent.socket" ]]; then
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
     return
   fi
 
-  # 3. cross session agent
-  local agent_file="${XDG_RUNTIME_DIR:-$HOME/.local/run}/ssh-agent.env"
-  if [[ -f "$agent_file" ]]; then
-    source "$agent_file" > /dev/null
-    if [[ -S "$SSH_AUTH_SOCK" ]] && kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
-      return
+  # 3. One persistent per-machine agent, reused across sessions.
+  #    The file name carries the hostname so a shared (NFS) $HOME does not
+  #    make two machines overwrite each other's env file.
+  local rundir="${XDG_RUNTIME_DIR:-$HOME/.local/run}"
+  local agent_file="$rundir/ssh-agent.$HOST.env"
+  local lock="$rundir/ssh-agent.$HOST.lock"
+  mkdir -p "$rundir"
+
+  # Serialize concurrent logins (new shells / tmux panes) so two of them
+  # can't both decide to spawn and orphan each other's agent.
+  local lock_fd locked=0
+  if (( $+commands[flock] )) && exec {lock_fd}>"$lock"; then
+    if flock "$lock_fd"; then
+      locked=1
+    else
+      exec {lock_fd}>&-
     fi
   fi
 
-  # 4. new ssh-agent
-  mkdir -p "${agent_file:h}"
-  ssh-agent > "$agent_file"
-  source "$agent_file" > /dev/null
+  [[ -r "$agent_file" ]] && source "$agent_file" > /dev/null
+  # Same reachability test as step 1. A stale socket file or a reused PID
+  # would pass a plain [[ -S ]] / kill -0 check.
+  ssh-add -l &>/dev/null
+  if (( $? == 2 )); then
+    ssh-agent > "$agent_file"
+    source "$agent_file" > /dev/null
+  fi
+
+  (( locked )) && { flock -u "$lock_fd"; exec {lock_fd}>&-; }
 }
 
 ssh_agent_setup
@@ -207,11 +227,12 @@ zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 # set list-colors to enable filename colorizing
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-# preview directory's content with exa when completing cd
-FZF_PREVIEW_CMD='if [ -f $realpath ]; then bat --color=always --style=numbers --line-range=:100 $realpath; else exa -T -L 2 --color=always $realpath; fi'
+# preview directory's content with eza when completing cd
+FZF_PREVIEW_CMD='if [ -f $realpath ]; then bat --color=always --style=numbers --line-range=:100 $realpath; else eza -T -L 2 --color=always $realpath; fi'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview ${FZF_PREVIEW_CMD}
 zstyle ':fzf-tab:complete:ls:*' fzf-preview ${FZF_PREVIEW_CMD}
 zstyle ':fzf-tab:complete:exa:*' fzf-preview ${FZF_PREVIEW_CMD}
+zstyle ':fzf-tab:complete:eza:*' fzf-preview ${FZF_PREVIEW_CMD}
 zstyle ':fzf-tab:complete:cat:*' fzf-preview ${FZF_PREVIEW_CMD}
 zstyle ':fzf-tab:complete:bat:*' fzf-preview ${FZF_PREVIEW_CMD}
 zstyle ':fzf-tab:*' fzf-pad 10
@@ -253,8 +274,18 @@ bindkey -r "^O"
 # Alias
 ##################################################
 
-alias ls="exa -l --icons -s modified"
-alias cat="bat"
+if (( $+commands[eza] )); then
+  alias ls="eza -l --icons -s modified"
+elif (( $+commands[exa] )); then
+  alias ls="exa -l --icons -s modified"
+fi
+
+if (( $+commands[bat] )); then
+  alias cat="bat"
+elif (( $+commands[batcat] )); then
+  alias cat="batcat"
+fi
+
 clip() {
   if [ -n "$WAYLAND_DISPLAY" ]; then
     wl-copy --trim-newline
